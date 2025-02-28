@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import gsap from 'gsap';
-import './Check.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import gsap from "gsap";
+import "./Check.css";
 
 const Check = () => {
   const [image, setImage] = useState(null);
@@ -11,16 +11,18 @@ const Check = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    gsap.fromTo(".check-health-container", 
-      { opacity: 0, y: 30 }, 
+    gsap.fromTo(
+      ".check-health-container",
+      { opacity: 0, y: 30 },
       { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" }
     );
   }, []);
 
   useEffect(() => {
     if (image) {
-      gsap.fromTo(".analysis-container", 
-        { opacity: 0, y: 30 }, 
+      gsap.fromTo(
+        ".analysis-container",
+        { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 1, ease: "power2.out" }
       );
     }
@@ -28,8 +30,9 @@ const Check = () => {
 
   useEffect(() => {
     if (result) {
-      gsap.fromTo(".result-box", 
-        { opacity: 0, scale: 0.9 }, 
+      gsap.fromTo(
+        ".result-box",
+        { opacity: 0, scale: 0.9 },
         { opacity: 1, scale: 1, duration: 1, ease: "power2.out" }
       );
     }
@@ -76,35 +79,66 @@ const Check = () => {
     }
   };
 
-  // Send Image to Roboflow
+  // Send Image to Both APIs
   const handleAnalyze = async () => {
     if (!base64Image) return;
     setLoading(true);
     setResult(null);
 
+    let myApiResult = null;
+    let roboflowResult = null;
+
+    // **Step 1: Try My API First**
     try {
-      const response = await axios({
-        method: "POST",
-        url: "https://classify.roboflow.com/coral-reef-bleach-detection/2",
-        params: {
-          api_key: "t7w2f6CHZP3iCelMtVzY"
-        },
-        data: base64Image,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      });
+      const formData = new FormData();
+      formData.append("image", base64Image); // Assuming your Flask API expects a file
 
-      const predictions = response.data.predictions;
-      const predictedClass = response.data.predicted_classes[0]; // Most confident class
-      const confidence = predictions[predictedClass].confidence.toFixed(2);
+      const myApiResponse = await axios.post(
+        "https://coral-sense-backend.onrender.com/predict",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
 
-      setResult({ predictedClass, confidence, image });
+      myApiResult = myApiResponse.data.prediction;
+      console.log("My API Result:", myApiResult);
     } catch (error) {
-      console.error("Error analyzing image:", error);
-      setResult({ error: "Failed to analyze image" });
+      console.error("My API failed:", error);
     }
 
+    // **Step 2: Try Roboflow API**
+    try {
+      const roboflowResponse = await axios({
+        method: "POST",
+        url: "https://classify.roboflow.com/coral-reef-bleach-detection/2",
+        params: { api_key: "t7w2f6CHZP3iCelMtVzY" },
+        data: base64Image,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      });
+
+      const predictions = roboflowResponse.data.predictions;
+      roboflowResult = roboflowResponse.data.predicted_classes[0]; // Most confident class
+      console.log("Roboflow Result:", roboflowResult);
+    } catch (error) {
+      console.error("Roboflow API failed:", error);
+    }
+
+    // **Step 3: Choose Final Result Based on Conditions**
+    let finalResult = "";
+    if (myApiResult && roboflowResult) {
+      if (myApiResult === roboflowResult) {
+        finalResult = myApiResult; // Both APIs agree → Show the result
+      } else {
+        finalResult = myApiResult; // My API and Roboflow are different → Show My API's result
+      }
+    } else if (myApiResult) {
+      finalResult = myApiResult; // My API worked but Roboflow didn't
+    } else if (roboflowResult) {
+      finalResult = roboflowResult; // Roboflow worked but My API didn't
+    } else {
+      finalResult = "API error or server down"; // Both APIs failed
+    }
+
+    setResult({ predictedClass: finalResult, image });
     setLoading(false);
   };
 
@@ -115,30 +149,30 @@ const Check = () => {
       <br />
       {/* Drag & Drop Upload Box */}
       <div
-        className={`upload-box ${dragging ? 'dragging' : ''}`}
+        className={`upload-box ${dragging ? "dragging" : ""}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => document.getElementById('fileInput').click()}
+        onClick={() => document.getElementById("fileInput").click()}
       >
         {image ? (
           <img src={image} alt="Uploaded Coral" className="uploaded-image" />
         ) : (
-          <p>Drag & drop an image here, or <span>click to upload</span></p>
+          <p>
+            Drag & drop an image here, or <span>click to upload</span>
+          </p>
         )}
         <input type="file" id="fileInput" accept="image/*" onChange={handleImageChange} hidden />
       </div>
 
-      {/* Analysis Section (Left: Uploaded Image | Right: Result Box) */}
+      {/* Analysis Section */}
       {image && (
         <div className="analysis-container">
-          {/* Left: Uploaded Image */}
           <div className="image-container">
             <p>Input Image</p>
             <img src={image} alt="Uploaded Coral" className="input-image" />
           </div>
 
-          {/* Right: Result Image Box (Blank Until Analyzed) */}
           <div className="image-container">
             <p>Result</p>
             <div className="result-box">
@@ -147,8 +181,8 @@ const Check = () => {
               ) : result ? (
                 <div className="result-image-container">
                   <img src={result.image} alt="Processed Coral" className="result-image" />
-                  <div className={`result-tag ${result.predictedClass === 'Bleached' ? 'bleached' : 'healthy'}`}>
-                    {result.predictedClass} ({result.confidence})
+                  <div className={`result-tag ${result.predictedClass === "Bleached" ? "bleached" : "healthy"}`}>
+                    {result.predictedClass}
                   </div>
                 </div>
               ) : (
@@ -161,7 +195,7 @@ const Check = () => {
 
       {/* Analyze Button */}
       <button className="analyze-btn" onClick={handleAnalyze} disabled={!base64Image || loading}>
-        {loading ? 'Analyzing...' : 'Analyze Coral'}
+        {loading ? "Analyzing..." : "Analyze Coral"}
       </button>
     </div>
   );
