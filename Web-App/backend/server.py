@@ -1,32 +1,42 @@
 from flask import Flask, request, jsonify
-import torch
+from ultralytics import YOLO
 from PIL import Image
 import io
-from ultralytics import YOLO
-
-
 
 app = Flask(__name__)
 
-# Load your pre-trained model
-model = YOLO('C:/Users/jayas/OneDrive/Desktop/Coral-Reef-Health-Monitoring-and-Plastic-Detection-main/coral reef/backend/healthy-bleach-coral-classifier.pt')
-model.eval()
+# Load YOLOv11m-cls model (Update the path)
+model = YOLO("models/coral-classifier.pt")  # Load local YOLOv11 model
+
+@app.route('/')
+def home():
+    return '''
+    <h1>🪸 Coral Reef Health API</h1>
+    <p>Welcome to the Coral Reef Health Analysis API!</p>
+    <p>Use the <code>/predict</code> endpoint to analyze coral reef images.</p>
+    '''
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        # Read image file from request
-        img_file = request.files['image']
-        img = Image.open(io.BytesIO(img_file.read()))
+    print(request.files)  # Debugging
+    if 'image' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
 
-        # Pre-process image and run through the model
-        # (Modify this based on your model's requirements)
-        output = model(img)
-        # Process output and return response
-        result = output.argmax(dim=1).item()  # Assuming binary classification
-        return jsonify({'prediction': 'healthy' if output[0].names[int(output[0].probs.top1)] == 0 else 'bleached'})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+    file = request.files['image']
+
+    image = Image.open(io.BytesIO(file.read())).convert('RGB')
+
+    # Perform inference
+    results = model(image)
+    predicted_class = results[0].names[int(results[0].probs.top1)]
+    confidence = results[0].probs.top1conf.item() * 100
+
+    return jsonify({
+            'prediction': predicted_class,
+            'confidence': f"{confidence:.2f}%",
+        })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
