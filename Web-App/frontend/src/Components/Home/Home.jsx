@@ -34,7 +34,7 @@ const Home = () => {
         </div>
         <div className="line"></div>
         <div className="cta-container">
-          <a className="cta-button"><Link to="/check-health">Check Coral Health Now</Link></a>
+          <Link to="/check-health" className="cta-button">Check Coral Health Now</Link>
         </div>
       </div>
       <ProjectInfo />
