@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { gsap } from "gsap";
+import { Link } from "react-router-dom";
 import "./Home.css";
 import ProjectInfo from "../ProjectInfo/ProjectInfo";
 
@@ -33,7 +34,7 @@ const Home = () => {
         </div>
         <div className="line"></div>
         <div className="cta-container">
-            <a href="/check-health" className="cta-button">Check Coral Health Now</a>
+          <a className="cta-button"><Link to="/check-health">Check Coral Health Now</Link></a>
         </div>
       </div>
       <ProjectInfo />
