@@ -43,12 +43,12 @@ const Contact = () => {
       {/* Team Members in Second Row */}
       <div className="team-section">
         <div className="team-member">
-          <img src="/assets/ajay.png" alt="Ajay Jakkampudi" />
+          <img src="/assets/ajay.jpeg" alt="Ajay Jakkampudi" />
           <h3>Ajay Jakkampudi</h3>
           <p>Team Member</p>
           <div className="social-links">
-            <a href="https://github.com/AjayJakkampudi" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://linkedin.com/in/ajay-jakkampudi" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/JakkampudiAjay" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/jakkampudi-ajay-b345a7231/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           </div>
         </div>
 
