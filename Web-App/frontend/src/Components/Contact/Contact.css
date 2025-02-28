@@ -1,0 +1,146 @@
+/* Contact Page Container */
+.contact-container {
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+    padding: 50px;
+    color: #F8F9FA;
+}
+
+.contact-container h2{
+    margin-top: 0;
+    margin-bottom: 40px;
+}
+
+/* Team Section */
+.team-section {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+/* Team Leader (Single Row Centered) */
+.team-lead {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 10px;
+}
+
+/* Team Member Card */
+.team-member {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    width: 280px;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+}
+
+.team-member img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 3px solid #FFD700;
+}
+
+.team-member h3 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.team-member p {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+/* Social Links */
+.social-links a {
+    display: inline-block;
+    margin: 5px;
+    padding: 8px 12px;
+    background: #FFD700;
+    color: black;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+.social-links a:hover {
+    background: #FFA500;
+}
+
+/* Guide Section */
+.guide-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+/* Guide Card */
+.guide-card {
+    transition: transform 0.3s ease-in-out;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Email Link */
+.email-link {
+    display: block;
+    margin-top: 10px;
+    color: #FFD700;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+.email-link:hover {
+    text-decoration: underline;
+}
+
+/* Contact Form */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 500px;
+    margin: auto;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+}
+
+.contact-form button {
+    background: #FFD700;
+    color: black;
+    padding: 12px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.contact-form button:hover {
+    background: #FFA500;
+}
