@@ -1,3 +1,6 @@
 flask
+torch
 pillow
 ultralytics
+flask-cors  
+gunicorn

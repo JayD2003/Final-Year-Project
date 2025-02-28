@@ -2,8 +2,12 @@ from flask import Flask, request, jsonify
 from ultralytics import YOLO
 from PIL import Image
 import io
+import os
+from flask_cors import CORS  # (Optional, if frontend is on a different domain)
 
 app = Flask(__name__)
+CORS(app)  # Allow cross-origin requests
+
 
 # Load YOLOv11m-cls model (Update the path)
 model = YOLO("models/coral-classifier.pt")  # Load local YOLOv11 model
@@ -39,4 +43,5 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Use Render's assigned port
+    app.run(host="0.0.0.0", port=port, debug=False)  # ✅ Disable debug mode
