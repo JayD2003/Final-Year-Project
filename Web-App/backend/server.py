@@ -6,8 +6,7 @@ import os
 from flask_cors import CORS  # (Optional, if frontend is on a different domain)
 
 app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests
-
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all domains
 
 # Load YOLOv11m-cls model (Update the path)
 model = YOLO("models/coral-classifier.pt")  # Load local YOLOv11 model
