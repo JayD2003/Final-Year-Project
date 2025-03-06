@@ -87,11 +87,19 @@ const Check = () => {
 
     let myApiResult = null;
     let roboflowResult = null;
+      // ✅ Get the actual file from input
+    const fileInput = document.getElementById("fileInput");
+    if (!fileInput.files[0]) {
+      alert("No file selected!");
+      setLoading(false);
+      return;
+    }
+    const file = fileInput.files[0];
 
     // **Step 1: Try My API First**
     try {
       const formData = new FormData();
-      formData.append("image", base64Image); // Assuming your Flask API expects a file
+      formData.append("image", file); // Assuming your Flask API expects a file
 
       const myApiResponse = await axios.post(
         "https://coral-sense-backend.onrender.com/predict",
